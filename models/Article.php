@@ -77,6 +77,20 @@ class Article extends \yii\db\ActiveRecord
         return (bool) $this->save(false);
     }
 
+    /**
+     * Выводим картинку
+     * 
+     * @return string
+     */
+    public function getImage() : string
+    {
+        
+        return (isset($this->image)) ? '/uploads/' . $this->image : '/no-image.png';
+    }
+
+    /**
+     * Удалаяем изображение
+     */
     public function deleteImage()
     {
         $imageUploadModel = new ImageUpload();
