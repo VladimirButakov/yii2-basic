@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\models\Category;
 
 /**
  * This is the model class for table "article".
@@ -101,5 +102,28 @@ class Article extends \yii\db\ActiveRecord
     {
         $this->deleteImage();
         return parent::beforeDelete();
+    }
+
+    public function getCategory()
+    {
+        return $this->hasOne(Category::className(), ['id' => 'category_id']);
+    }
+
+    /**
+     * Сохраняем категорию в бд
+     * 
+     * @param int $categoryId
+     * @return bool
+     */
+    public function saveCategory(int $categoryId)
+    {
+        $category = Category::findOne($categoryId);
+        $result = isset($category);
+        if ($result)
+        {
+            $this->link('category', $category);
+        }
+
+        return $result; 
     }
 }

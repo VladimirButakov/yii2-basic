@@ -40,4 +40,12 @@ class Category extends \yii\db\ActiveRecord
             'title' => 'Title',
         ];
     }
+
+    /**
+     * Метод получает все статьи выбранной категории
+     */
+    public function getArticles()
+    {
+        return $this->hasMany(Article::className(), ['category_id' => 'id']);
+    }
 }
