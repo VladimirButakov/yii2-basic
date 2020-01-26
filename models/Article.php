@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use app\models\Category;
+use app\models\Tag;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "article".
@@ -125,5 +127,31 @@ class Article extends \yii\db\ActiveRecord
         }
 
         return $result; 
+    }
+
+    public function getTags()
+    {
+        return $this->hasMany(Tag::className(), ['id' => 'tag_id'])
+            ->viaTable('article_tag', ['article_id' => 'id']);
+    }
+
+    public function getSelectedeTags()
+    {
+        $selectedTags = $this->getTags()->select('id')->asArray()->all();
+        return ArrayHelper::getColumn( $selectedTags, 'id');
+    }
+
+    /**
+     * Сохраняем теи статьи
+     */
+    public function saveTags(array $tags)
+    {
+        ArticleTag::deleteAll(['article_id'=>$this->id]);
+        
+        foreach($tags as $tagId)
+        {
+            $tag = Tag::findOne($tagId);
+            $this->link('tags', $tag);
+        }
     }
 }
