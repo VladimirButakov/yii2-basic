@@ -64,6 +64,22 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+
+    /**
+     * Метод вывода отдельной статьи
+     * 
+     * @return string
+     */
+    public function actionView() 
+    {
+        return $this->render('single');
+    }
+
+    public function actionCategory()
+    {
+        return $this->render('category');
+    }
+
     /**
      * Login action.
      *
