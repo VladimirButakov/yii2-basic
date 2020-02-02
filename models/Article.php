@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use app\models\Category;
 use app\models\Tag;
+use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -142,7 +143,9 @@ class Article extends \yii\db\ActiveRecord
     }
 
     /**
-     * Сохраняем теи статьи
+     * Сохраняем теги статьи
+     * 
+     * @return void
      */
     public function saveTags(array $tags)
     {
@@ -153,5 +156,45 @@ class Article extends \yii\db\ActiveRecord
             $tag = Tag::findOne($tagId);
             $this->link('tags', $tag);
         }
+    }
+
+    /**
+     * Сохраняем теги статьи
+     * 
+     * @param int $pageCoutn
+     * @return string
+     */
+    public function getDate()
+    {
+        return Yii::$app->formatter->asDate($this->date);
+    }
+
+    /**
+     *  Возвращает статьи и пагинацию
+     * 
+     * @return array
+     */
+    public static function getAll(int $pageSize = 1)
+    {
+        // build a DB query to get all articles with status = 1
+        $query = Article::find();
+
+        // get the total number of articles (but do not fetch the article data yet)
+        $count = $query->count();
+
+        // create a pagination object with the total count
+        $pagination = new Pagination(['totalCount' => $count, 'pageSize' => $pageSize]);
+
+        // limit the query using the pagination and retrieve the articles
+        $articles = $query->offset($pagination->offset)
+        ->limit($pagination->limit)
+        ->all();
+
+        $data = [
+            'articles' => $articles,
+            'pagination' => $pagination,
+        ];
+
+        return  $data;
     }
 }
